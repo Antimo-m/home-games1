@@ -16,6 +16,8 @@
         margin: 0;
         -webkit-user-select: none;
         user-select: none;
+        overscroll-behavior-y: contain;
+        touch-action: pan-y;
       }
       input, select, button, textarea {
         -webkit-user-select: text;
@@ -24,6 +26,7 @@
       button {
         -webkit-appearance: none;
         appearance: none;
+        touch-action: manipulation;
       }
     </style>
   </head>

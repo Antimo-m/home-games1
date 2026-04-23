@@ -89,6 +89,14 @@ function reducer(state, action) {
       return { ...state, tables }
     }
 
+    case 'CLEAR_LAST_INSERTED': {
+      const { tableId } = action
+      const tables = state.tables.map((table) => (
+        table.id === tableId ? { ...table, lastInserted: null } : table
+      ))
+      return { ...state, tables }
+    }
+
     case 'ADD_PLAYER_TABLE': {
       const { tableId, player } = action
       const tables = state.tables.map((table) => {
@@ -227,6 +235,17 @@ export default function App() {
       }
     }
     return () => {}
+  }, [state.currentTableId, state.tables])
+
+  useEffect(() => {
+    const currentTable = state.tables.find((table) => table.id === state.currentTableId)
+    if (!currentTable?.lastInserted) return undefined
+
+    const timeoutId = window.setTimeout(() => {
+      dispatch({ type: 'CLEAR_LAST_INSERTED', tableId: currentTable.id })
+    }, 1100)
+
+    return () => window.clearTimeout(timeoutId)
   }, [state.currentTableId, state.tables])
 
   function handleCreateTable(payload) {
