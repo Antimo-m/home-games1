@@ -1,11 +1,42 @@
 .wrapper {
   max-width: 1200px;
   margin: 26px auto;
-  padding: 24px;
+  padding: 28px;
   background: var(--panel-gradient);
   color: var(--panel-text);
-  border-radius: 12px;
+  border-radius: 26px;
   position: relative;
+  border: 1px solid var(--panel-border);
+  box-shadow: var(--panel-shadow);
+  backdrop-filter: blur(12px);
+  overflow: hidden;
+}
+
+.wrapper::before,
+.wrapper::after {
+  content: '';
+  position: absolute;
+  width: 132px;
+  height: 198px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.14;
+  pointer-events: none;
+}
+
+.wrapper::before {
+  top: 18px;
+  left: 18px;
+  background-image: url('/ace-spades.svg');
+  transform: rotate(-10deg);
+}
+
+.wrapper::after {
+  right: 18px;
+  bottom: 18px;
+  background-image: url('/king-hearts.svg');
+  transform: rotate(10deg);
 }
 
 @media (max-width: 768px) {
@@ -23,6 +54,15 @@
   }
 }
 
+@media (max-width: 480px) {
+  .wrapper::before,
+  .wrapper::after {
+    width: 84px;
+    height: 126px;
+    opacity: 0.1;
+  }
+}
+
 .headerRow { 
   display: flex; 
   align-items: center; 
@@ -31,6 +71,8 @@
   gap: 12px; 
   margin-bottom: 18px;
   text-align: center;
+  position: relative;
+  z-index: 1;
 }
 
 @media (max-width: 768px) {
@@ -48,9 +90,10 @@
 
 .title { 
   margin: 0;
-  font-size: 34px;
+  font-size: 36px;
   font-weight: 800;
   text-align: center;
+  letter-spacing: -0.04em;
 }
 
 @media (max-width: 768px) {
@@ -95,8 +138,8 @@
 
 .pot { 
   background: var(--card-bg); 
-  padding: 10px 16px; 
-  border-radius: 8px;
+  padding: 12px 18px; 
+  border-radius: 16px;
   font-size: 14px;
   white-space: nowrap;
   text-align: center;
@@ -113,14 +156,14 @@
 }
 
 .reset { 
-  background: #7b2222; 
+  background: linear-gradient(135deg, #8a2d2d, #5f1717); 
   color: white; 
-  border: none; 
-  padding: 8px 10px; 
-  border-radius: 8px; 
+  border: 1px solid rgba(255,255,255,0.08); 
+  padding: 10px 14px; 
+  border-radius: 14px; 
   cursor: pointer; 
   font-weight: 600;
-  min-height: 36px;
+  min-height: 42px;
   font-size: 12px;
 }
 
@@ -132,15 +175,16 @@
 }
 
 .cta { 
-  background: #0f8f3e; 
+  background: linear-gradient(135deg, var(--accent-strong), var(--accent-strong-2)); 
   color: white; 
-  border: none; 
-  padding: 8px 12px; 
-  border-radius: 8px; 
-  font-weight: 600; 
+  border: 1px solid rgba(255,255,255,0.12); 
+  padding: 10px 14px; 
+  border-radius: 14px; 
+  font-weight: 700; 
   cursor: pointer;
-  min-height: 36px;
+  min-height: 42px;
   font-size: 12px;
+  box-shadow: 0 10px 22px rgba(15, 143, 62, 0.22);
 }
 
 @media (max-width: 480px) {
@@ -153,12 +197,12 @@
 .closeBtn { 
   background: #5b5b5b; 
   color: white; 
-  border: none; 
-  padding: 8px 12px; 
-  border-radius: 8px; 
-  font-weight: 600; 
+  border: 1px solid rgba(255,255,255,0.08); 
+  padding: 10px 14px; 
+  border-radius: 14px; 
+  font-weight: 700; 
   cursor: pointer;
-  min-height: 36px;
+  min-height: 42px;
   font-size: 12px;
 }
 
@@ -171,19 +215,21 @@
 
 .addPanel {
   max-width: 720px;
-  margin: 8px auto 16px;
+  margin: 10px auto 18px;
   display: flex;
   gap: 8px;
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
 }
 
 .addSelect,
 .addInput {
-  padding: 8px 10px;
-  border-radius: 6px;
-  min-height: 36px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  min-height: 42px;
   font-size: 12px;
   border: 1px solid var(--input-border);
   background: var(--input-bg);
@@ -245,9 +291,9 @@
 }
 
 .buyinItem { 
-  padding: 8px 10px; 
+  padding: 10px 12px; 
   background: var(--seat-chip-bg); 
-  border-radius: 8px; 
+  border-radius: 14px; 
   display: flex; 
   flex-direction: column;
   align-items: flex-start;
@@ -360,12 +406,13 @@
   position: relative;
   width: 100%;
   max-width: 1000px;
-  margin: 18px auto 30px;
+  margin: 22px auto 30px;
   padding: 12px;
   background: transparent;
   border-radius: 12px;
-  aspect-ratio: 1 / 0.84;
+  aspect-ratio: 1 / 1;
   min-height: 680px;
+  z-index: 1;
 }
 
 @media (max-width: 768px) {
@@ -398,7 +445,7 @@
   justify-content: center;
   font-weight: 700;
   color: var(--panel-text);
-  box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+  box-shadow: 0 20px 44px rgba(0,0,0,0.4);
   font-size: 18px;
   text-align: center;
   padding: 12px;
@@ -457,7 +504,7 @@
 }
 
 .playerSeatActive {
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-strong) 65%, white 35%);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-strong) 65%, white 35%);
 }
 
 .playerSeatCompact {
@@ -500,8 +547,9 @@
   max-width: 720px;
   background: var(--card-bg);
   border: 1px solid var(--card-border);
-  border-radius: 14px;
-  padding: 14px;
+  border-radius: 22px;
+  padding: 18px;
+  box-shadow: var(--soft-shadow);
 }
 
 .playerDetailsTop {
@@ -580,7 +628,7 @@
   font-size: 36px;
   line-height: 1;
   cursor: pointer;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+  box-shadow: 0 16px 34px rgba(0,0,0,0.28);
   z-index: 30;
   touch-action: manipulation;
 }
@@ -591,10 +639,10 @@
   bottom: 96px;
   width: min(320px, calc(100vw - 32px));
   padding: 16px;
-  border-radius: 14px;
+  border-radius: 22px;
   background: var(--panel-gradient);
   border: 1px solid var(--card-border);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+  box-shadow: var(--panel-shadow);
   z-index: 30;
   display: flex;
   flex-direction: column;
@@ -609,8 +657,8 @@
 }
 
 .fabInput {
-  min-height: 38px;
-  border-radius: 8px;
+  min-height: 42px;
+  border-radius: 14px;
   border: 1px solid var(--input-border);
   background: var(--input-bg);
   color: var(--panel-text);

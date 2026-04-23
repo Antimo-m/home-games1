@@ -11,6 +11,39 @@ function uid(prefix = '') {
   return prefix + Math.random().toString(36).slice(2, 9)
 }
 
+function createActivityEntry(type, message) {
+  return {
+    id: uid('log_'),
+    type,
+    message,
+    timestamp: Date.now(),
+  }
+}
+
+function normalizePlayer(player) {
+  return {
+    ...player,
+    buyIns: Array.isArray(player.buyIns) ? player.buyIns.map((value) => Number(value) || 0).filter((value) => value >= 0) : [],
+    finalCash: player.finalCash ?? '',
+  }
+}
+
+function normalizeTable(table) {
+  return {
+    ...table,
+    players: Array.isArray(table.players) ? table.players.map(normalizePlayer) : [],
+    activity: Array.isArray(table.activity) ? table.activity : [],
+    history: Array.isArray(table.history) ? table.history : [],
+  }
+}
+
+function appendActivity(table, entry) {
+  return {
+    ...table,
+    activity: [entry, ...(table.activity || [])].slice(0, 100),
+  }
+}
+
 const initialState = {
   tables: [], // array of { id, name, players, gameStarted, countdown, lastInserted, showWelcome, createdAt, history }
   currentTableId: null, // currently viewed table
@@ -33,7 +66,10 @@ function reducer(state, action) {
       return {
         ...state,
         ...action.payload,
+        tables: (action.payload.tables || []).map(normalizeTable),
         historyTables: pruneHistory(action.payload.historyTables || action.payload.backupTables || []),
+        currentTableId: null,
+        view: 'list',
       }
 
     case 'SET_VIEW':
@@ -43,7 +79,7 @@ function reducer(state, action) {
       return { ...state, theme: action.theme }
 
     case 'CREATE_TABLE': {
-      const newTable = {
+      const newTable = normalizeTable({
         id: uid('table_'),
         name: action.tableName,
         players: action.players,
@@ -53,7 +89,8 @@ function reducer(state, action) {
         showWelcome: false,
         createdAt: Date.now(),
         history: [],
-      }
+        activity: [createActivityEntry('table_created', `Tavolo creato con ${action.players.length} giocatori`)],
+      })
       return { ...state, tables: [...state.tables, newTable], currentTableId: newTable.id, view: 'playing' }
     }
 
@@ -84,7 +121,10 @@ function reducer(state, action) {
         )
         const player = players.find(p => p.id === playerId)
         const idx = player ? player.buyIns.length - 1 : null
-        return { ...t, players, lastInserted: idx != null ? { playerId, idx } : null }
+        return appendActivity(
+          { ...t, players, lastInserted: idx != null ? { playerId, idx } : null },
+          createActivityEntry('buyin_added', `Aggiunto buy-in di € ${amount.toFixed(2)} a ${player?.name || 'player'}`)
+        )
       })
       return { ...state, tables }
     }
@@ -101,10 +141,72 @@ function reducer(state, action) {
       const { tableId, player } = action
       const tables = state.tables.map((table) => {
         if (table.id !== tableId) return table
-        return {
+        return appendActivity({
           ...table,
           players: [...table.players, player],
-        }
+        }, createActivityEntry('player_added', `Aggiunto player ${player.name}`))
+      })
+      return { ...state, tables }
+    }
+
+    case 'UPDATE_PLAYER_TABLE': {
+      const { tableId, playerId, updates, activityMessage } = action
+      const tables = state.tables.map((table) => {
+        if (table.id !== tableId) return table
+        const players = table.players.map((player) => (
+          player.id === playerId ? { ...player, ...updates } : player
+        ))
+        const updatedTable = { ...table, players }
+        return activityMessage ? appendActivity(updatedTable, createActivityEntry('player_updated', activityMessage)) : updatedTable
+      })
+      return { ...state, tables }
+    }
+
+    case 'REMOVE_PLAYER_TABLE': {
+      const { tableId, playerId } = action
+      const tables = state.tables.map((table) => {
+        if (table.id !== tableId) return table
+        const player = table.players.find((entry) => entry.id === playerId)
+        return appendActivity(
+          { ...table, players: table.players.filter((entry) => entry.id !== playerId) },
+          createActivityEntry('player_removed', `Rimosso player ${player?.name || ''}`.trim())
+        )
+      })
+      return { ...state, tables }
+    }
+
+    case 'UPDATE_BUYIN_TABLE': {
+      const { tableId, playerId, buyinIndex, amount } = action
+      const tables = state.tables.map((table) => {
+        if (table.id !== tableId) return table
+        const players = table.players.map((player) => {
+          if (player.id !== playerId) return player
+          const nextBuyIns = [...player.buyIns]
+          nextBuyIns[buyinIndex] = amount
+          return { ...player, buyIns: nextBuyIns }
+        })
+        const player = players.find((entry) => entry.id === playerId)
+        return appendActivity(
+          { ...table, players },
+          createActivityEntry('buyin_updated', `Corretto buy-in ${buyinIndex + 1} di ${player?.name || 'player'} a € ${amount.toFixed(2)}`)
+        )
+      })
+      return { ...state, tables }
+    }
+
+    case 'REMOVE_BUYIN_TABLE': {
+      const { tableId, playerId, buyinIndex } = action
+      const tables = state.tables.map((table) => {
+        if (table.id !== tableId) return table
+        const players = table.players.map((player) => {
+          if (player.id !== playerId) return player
+          return { ...player, buyIns: player.buyIns.filter((_, idx) => idx !== buyinIndex) }
+        })
+        const player = players.find((entry) => entry.id === playerId)
+        return appendActivity(
+          { ...table, players },
+          createActivityEntry('buyin_removed', `Rimosso buy-in ${buyinIndex + 1} di ${player?.name || 'player'}`)
+        )
       })
       return { ...state, tables }
     }
@@ -134,7 +236,7 @@ function reducer(state, action) {
       const archivedTable = state.historyTables.find(t => t.id === tableId)
       if (!archivedTable) return state
       const restoredTable = {
-        ...archivedTable,
+        ...normalizeTable(archivedTable),
         archivedAt: undefined,
         archivedReason: undefined,
         deletedAt: undefined,
@@ -157,7 +259,7 @@ function reducer(state, action) {
       const tableToArchive = state.tables.find(t => t.id === tableId)
       if (!tableToArchive) return state
       const resetSnapshot = {
-        ...tableToArchive,
+        ...normalizeTable(tableToArchive),
         players: tableToArchive.players.map((p) => ({ ...p, buyIns: [...p.buyIns] })),
         gameStarted: true,
         countdown: 0,
@@ -282,6 +384,40 @@ export default function App() {
     dispatch({ type: 'ADD_PLAYER_TABLE', tableId: state.currentTableId, player })
   }
 
+  function handleUpdatePlayer(playerId, updates, activityMessage) {
+    dispatch({ type: 'UPDATE_PLAYER_TABLE', tableId: state.currentTableId, playerId, updates, activityMessage })
+  }
+
+  function handleRemovePlayer(playerId) {
+    dispatch({ type: 'REMOVE_PLAYER_TABLE', tableId: state.currentTableId, playerId })
+  }
+
+  function handleUpdateBuyin(playerId, buyinIndex, amount) {
+    dispatch({ type: 'UPDATE_BUYIN_TABLE', tableId: state.currentTableId, playerId, buyinIndex, amount })
+  }
+
+  function handleRemoveBuyin(playerId, buyinIndex) {
+    dispatch({ type: 'REMOVE_BUYIN_TABLE', tableId: state.currentTableId, playerId, buyinIndex })
+  }
+
+  function handleExportData() {
+    const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' })
+    const link = document.createElement('a')
+    link.href = URL.createObjectURL(blob)
+    link.download = `home-games-backup-${new Date().toISOString().slice(0, 10)}.json`
+    link.click()
+    URL.revokeObjectURL(link.href)
+  }
+
+  function handleImportData(raw) {
+    try {
+      const parsed = JSON.parse(raw)
+      dispatch({ type: 'LOAD', payload: parsed })
+    } catch {
+      window.alert('File di backup non valido')
+    }
+  }
+
   function handleDeleteTable(tableId) {
     dispatch({ type: 'DELETE_TABLE', tableId })
   }
@@ -316,6 +452,8 @@ export default function App() {
           onNewTable={() => dispatch({ type: 'SET_VIEW', view: 'setup' })}
           onDeleteTable={handleDeleteTable}
           onRestoreTable={handleRestoreTable}
+          onExportData={handleExportData}
+          onImportData={handleImportData}
         />
       )}
 
@@ -327,6 +465,8 @@ export default function App() {
           onNewTable={() => dispatch({ type: 'SET_VIEW', view: 'setup' })}
           onDeleteTable={handleDeleteTable}
           onRestoreTable={handleRestoreTable}
+          onExportData={handleExportData}
+          onImportData={handleImportData}
         />
       )}
 
@@ -358,10 +498,15 @@ export default function App() {
               players={currentTable.players}
               onAddBuyin={handleAddBuyin}
               onAddPlayer={handleAddPlayer}
+              onUpdatePlayer={handleUpdatePlayer}
+              onRemovePlayer={handleRemovePlayer}
+              onUpdateBuyin={handleUpdateBuyin}
+              onRemoveBuyin={handleRemoveBuyin}
               onReset={handleResetTable}
               onClose={() => dispatch({ type: 'SET_VIEW', view: 'list' })}
               lastInserted={currentTable.lastInserted}
               tableName={currentTable.name}
+              activity={currentTable.activity || []}
             />
           )}
         </>

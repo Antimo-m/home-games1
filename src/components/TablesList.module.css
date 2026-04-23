@@ -1,11 +1,15 @@
 .container {
   max-width: 1100px;
-  margin: 60px auto 28px;
+  margin: 52px auto 28px;
   background: var(--panel-gradient);
-  border-radius: 12px;
+  border-radius: 26px;
   padding: 40px;
   color: var(--panel-text);
-  box-shadow: 0 6px 30px rgba(0,0,0,0.6);
+  border: 1px solid var(--panel-border);
+  box-shadow: var(--panel-shadow);
+  backdrop-filter: blur(12px);
+  position: relative;
+  overflow: hidden;
 }
 
 @media (max-width: 768px) {
@@ -23,11 +27,39 @@
   }
 }
 
+.container::before,
+.container::after {
+  content: '';
+  position: absolute;
+  width: 126px;
+  height: 188px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.14;
+  pointer-events: none;
+}
+
+.container::before {
+  top: 22px;
+  left: 18px;
+  background-image: url('/ace-spades.svg');
+  transform: rotate(-10deg);
+}
+
+.container::after {
+  right: 18px;
+  bottom: 18px;
+  background-image: url('/king-hearts.svg');
+  transform: rotate(10deg);
+}
+
 .title {
-  margin: 0 0 8px;
-  color: #f3f9f1;
-  font-size: 36px;
+  margin: 0 0 10px;
+  color: #f7fbf6;
+  font-size: 40px;
   font-weight: 900;
+  letter-spacing: -0.04em;
 }
 
 @media (max-width: 768px) {
@@ -42,12 +74,31 @@
   }
 }
 
+.title,
+.empty,
+.tablesList,
+.actionsRow,
+.historySection {
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 480px) {
+  .container::before,
+  .container::after {
+    width: 78px;
+    height: 116px;
+    opacity: 0.1;
+  }
+}
+
 .empty {
-  padding: 20px;
+  padding: 24px;
   text-align: center;
-  color: #b8d8b0;
+  color: var(--soft-text);
   background: var(--card-bg);
-  border-radius: 8px;
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
   margin: 20px 0;
   font-size: 14px;
 }
@@ -68,8 +119,8 @@
 .tablesList {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 16px;
-  margin: 20px 0;
+  gap: 18px;
+  margin: 24px 0;
 }
 
 @media (max-width: 768px) {
@@ -89,11 +140,12 @@
 .tableCard {
   background: var(--card-bg);
   border: 1px solid var(--card-border);
-  border-radius: 10px;
-  padding: 16px;
+  border-radius: 22px;
+  padding: 18px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
+  box-shadow: var(--soft-shadow);
 }
 
 @media (max-width: 480px) {
@@ -105,8 +157,8 @@
 
 .tableName {
   font-weight: 700;
-  font-size: 16px;
-  color: #bff7b3;
+  font-size: 18px;
+  color: #d5ffd0;
 }
 
 @media (max-width: 480px) {
@@ -118,9 +170,9 @@
 .tableInfo {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
   font-size: 12px;
-  opacity: 0.8;
+  color: var(--soft-text);
 }
 
 @media (max-width: 480px) {
@@ -145,15 +197,16 @@
 
 .selectBtn {
   flex: 1;
-  padding: 8px 12px;
-  background: #0f8f3e;
+  padding: 10px 14px;
+  background: linear-gradient(135deg, var(--accent-strong), var(--accent-strong-2));
   color: white;
-  border: none;
-  border-radius: 6px;
-  font-weight: 600;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 14px;
+  font-weight: 700;
   cursor: pointer;
-  min-height: 36px;
+  min-height: 42px;
   font-size: 13px;
+  box-shadow: 0 10px 22px rgba(15, 143, 62, 0.22);
 }
 
 .selectBtn:hover {
@@ -169,14 +222,14 @@
 
 .deleteBtn {
   flex: 0 0 auto;
-  padding: 8px 12px;
-  background: #7b2222;
+  padding: 10px 14px;
+  background: linear-gradient(135deg, #8a2d2d, #5f1717);
   color: white;
-  border: none;
-  border-radius: 6px;
-  font-weight: 600;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  font-weight: 700;
   cursor: pointer;
-  min-height: 36px;
+  min-height: 42px;
   font-size: 13px;
 }
 
@@ -193,16 +246,17 @@
 
 .newTableBtn {
   padding: 12px 24px;
-  background: #0f8f3e;
+  background: linear-gradient(135deg, var(--accent-strong), var(--accent-strong-2));
   color: white;
-  border: none;
-  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 16px;
   font-weight: 700;
   font-size: 14px;
   cursor: pointer;
   width: auto;
   min-width: 180px;
-  min-height: 44px;
+  min-height: 48px;
+  box-shadow: 0 10px 22px rgba(15, 143, 62, 0.24);
 }
 
 .newTableBtn:hover {
@@ -239,9 +293,9 @@
 .historyToggle {
   padding: 12px 16px;
   background: var(--card-bg);
-  color: #bff7b3;
+  color: #d5ffd0;
   border: 1px solid var(--card-border);
-  border-radius: 8px;
+  border-radius: 16px;
   cursor: pointer;
   font-weight: 600;
   width: 100%;
@@ -285,11 +339,12 @@
 .historyCard {
   background: var(--card-bg);
   border: 1px solid var(--card-border);
-  border-radius: 8px;
-  padding: 12px;
+  border-radius: 20px;
+  padding: 14px;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  box-shadow: var(--soft-shadow);
 }
 
 @media (max-width: 480px) {
@@ -316,7 +371,7 @@
   flex-direction: column;
   gap: 3px;
   font-size: 11px;
-  opacity: 0.7;
+  color: var(--soft-text);
 }
 
 @media (max-width: 480px) {
@@ -327,14 +382,14 @@
 
 .restoreBtn {
   padding: 8px 12px;
-  background: #8b6914;
+  background: linear-gradient(135deg, #9f7720, #7a5910);
   color: white;
-  border: none;
-  border-radius: 6px;
-  font-weight: 600;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  font-weight: 700;
   cursor: pointer;
   font-size: 13px;
-  min-height: 36px;
+  min-height: 42px;
 }
 
 .restoreBtn:hover {
