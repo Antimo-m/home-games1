@@ -1,0 +1,631 @@
+.wrapper {
+  max-width: 1200px;
+  margin: 26px auto;
+  padding: 24px;
+  background: var(--panel-gradient);
+  color: var(--panel-text);
+  border-radius: 12px;
+  position: relative;
+}
+
+@media (max-width: 768px) {
+  .wrapper {
+    margin: 16px auto;
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .wrapper {
+    margin: 8px auto;
+    padding: 12px;
+    border-radius: 8px;
+  }
+}
+
+.headerRow { 
+  display: flex; 
+  align-items: center; 
+  flex-direction: column;
+  justify-content: center; 
+  gap: 12px; 
+  margin-bottom: 18px;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .headerRow {
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .headerRow {
+    gap: 6px;
+  }
+}
+
+.title { 
+  margin: 0;
+  font-size: 34px;
+  font-weight: 800;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 22px;
+  }
+}
+
+.topActions { 
+  display: flex; 
+  flex-direction: column;
+  gap: 12px; 
+  align-items: center;
+  width: auto;
+}
+
+@media (max-width: 768px) {
+  .topActions {
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .topActions {
+    gap: 6px;
+  }
+}
+
+.buttonRow {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.pot { 
+  background: var(--card-bg); 
+  padding: 10px 16px; 
+  border-radius: 8px;
+  font-size: 14px;
+  white-space: nowrap;
+  text-align: center;
+  border: 1px solid var(--card-border);
+}
+
+@media (max-width: 480px) {
+  .pot {
+    font-size: 12px;
+    padding: 6px 8px;
+    width: 100%;
+    text-align: center;
+  }
+}
+
+.reset { 
+  background: #7b2222; 
+  color: white; 
+  border: none; 
+  padding: 8px 10px; 
+  border-radius: 8px; 
+  cursor: pointer; 
+  font-weight: 600;
+  min-height: 36px;
+  font-size: 12px;
+}
+
+@media (max-width: 480px) {
+  .reset {
+    min-height: 40px;
+    font-size: 11px;
+  }
+}
+
+.cta { 
+  background: #0f8f3e; 
+  color: white; 
+  border: none; 
+  padding: 8px 12px; 
+  border-radius: 8px; 
+  font-weight: 600; 
+  cursor: pointer;
+  min-height: 36px;
+  font-size: 12px;
+}
+
+@media (max-width: 480px) {
+  .cta {
+    min-height: 40px;
+    font-size: 11px;
+  }
+}
+
+.closeBtn { 
+  background: #5b5b5b; 
+  color: white; 
+  border: none; 
+  padding: 8px 12px; 
+  border-radius: 8px; 
+  font-weight: 600; 
+  cursor: pointer;
+  min-height: 36px;
+  font-size: 12px;
+}
+
+@media (max-width: 480px) {
+  .closeBtn {
+    min-height: 40px;
+    font-size: 11px;
+  }
+}
+
+.addPanel {
+  max-width: 720px;
+  margin: 8px auto 16px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.addSelect,
+.addInput {
+  padding: 8px 10px;
+  border-radius: 6px;
+  min-height: 36px;
+  font-size: 12px;
+  border: 1px solid var(--input-border);
+  background: var(--input-bg);
+  color: var(--panel-text);
+}
+
+.addSelect {
+  flex: 0 1 220px;
+  min-width: 180px;
+}
+
+.addInput {
+  width: 160px;
+}
+
+@media (max-width: 480px) {
+  .addPanel {
+    gap: 6px;
+  }
+
+  .addSelect {
+    flex-basis: 100%;
+    min-width: 0;
+  }
+
+  .addInput {
+    width: 120px;
+  }
+}
+
+.playerHeader { 
+  font-weight: 700; 
+  color: var(--panel-text); 
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+
+@media (max-width: 480px) {
+  .playerHeader {
+    font-size: 12px;
+  }
+}
+
+.buyins { 
+  flex: 1; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 6px; 
+  max-height: 280px; 
+  overflow: auto; 
+  padding-right: 6px;
+}
+
+@media (max-width: 480px) {
+  .buyins {
+    max-height: 120px;
+    gap: 4px;
+  }
+}
+
+.buyinItem { 
+  padding: 8px 10px; 
+  background: var(--seat-chip-bg); 
+  border-radius: 8px; 
+  display: flex; 
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  font-size: 12px;
+}
+
+@media (max-width: 480px) {
+  .buyinItem {
+    padding: 6px 8px;
+    font-size: 11px;
+  }
+}
+
+.buyinValue { 
+  font-weight: 600;
+}
+
+.buyinLabel {
+  font-size: 10px;
+  opacity: 0.7;
+  margin-bottom: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.newBuyin { 
+  box-shadow: 0 0 0 3px rgba(120,255,150,0.08), 0 6px 20px rgba(0,0,0,0.6); 
+  animation: pulse 1s ease-in-out; 
+}
+
+@keyframes pulse { 
+  0% { transform: translateY(-2px); } 
+  50% { transform: translateY(0); } 
+  100% { transform: translateY(-2px); } 
+}
+
+.total { 
+  text-align: right; 
+  font-size: 12px; 
+  color: var(--muted-text);
+}
+
+@media (max-width: 480px) {
+  .total {
+    font-size: 11px;
+  }
+}
+
+.addRow { 
+  display: flex; 
+  gap: 8px; 
+  align-items: center;
+}
+
+@media (max-width: 480px) {
+  .addRow {
+    gap: 6px;
+  }
+}
+
+.addRow input { 
+  flex: 1; 
+  padding: 6px 8px; 
+  border-radius: 6px; 
+  border: none;
+  font-size: 12px;
+}
+
+@media (max-width: 480px) {
+  .addRow input {
+    font-size: 11px;
+  }
+}
+
+.addRow button { 
+  padding: 6px 10px; 
+  background: #0f8f3e; 
+  color: white; 
+  border-radius: 6px; 
+  border: none; 
+  font-weight: 600; 
+  cursor: pointer;
+  font-size: 11px;
+}
+
+@media (max-width: 480px) {
+  .addRow button {
+    font-size: 10px;
+  }
+}
+
+.empty { 
+  opacity: 0.7; 
+  font-size: 12px;
+}
+
+@media (max-width: 480px) {
+  .empty {
+    font-size: 11px;
+  }
+}
+
+/* Stage layout: central table with players around */
+.tableStage {
+  position: relative;
+  width: 100%;
+  max-width: 1000px;
+  margin: 18px auto 30px;
+  padding: 12px;
+  background: transparent;
+  border-radius: 12px;
+  aspect-ratio: 1 / 0.84;
+  min-height: 680px;
+}
+
+@media (max-width: 768px) {
+  .tableStage {
+    max-width: 100%;
+    min-height: 560px;
+    margin: 12px auto 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tableStage {
+    min-height: 400px;
+    margin: 8px auto 16px;
+    padding: 8px;
+  }
+}
+
+.tableCenter {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: var(--table-center-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: var(--panel-text);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+  font-size: 18px;
+  text-align: center;
+  padding: 12px;
+}
+
+@media (max-width: 768px) {
+  .tableCenter {
+    width: 160px;
+    height: 160px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tableCenter {
+    width: 120px;
+    height: 120px;
+    font-size: 12px;
+  }
+}
+
+.playerSeat {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  appearance: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .playerSeat {
+    width: 140px;
+    min-height: 56px;
+    padding: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .playerSeat {
+    width: 110px;
+    min-height: 48px;
+    padding: 4px;
+    border-radius: 8px;
+  }
+}
+
+.playerSeatActive {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-strong) 65%, white 35%);
+}
+
+.playerSeatCompact {
+  width: var(--seat-size, 74px) !important;
+  min-height: var(--seat-size, 74px) !important;
+  padding: 6px 4px;
+  border-radius: 50px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.avatarBadge {
+  width: var(--avatar-size, 44px);
+  height: var(--avatar-size, 44px);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--table-center-gradient);
+  color: #fff;
+  font-size: calc(var(--avatar-size, 44px) * 0.3);
+  font-weight: 800;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.28);
+}
+
+.compactName {
+  margin-top: 4px;
+  max-width: var(--compact-name-width, 64px);
+  font-size: 10px;
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--panel-text);
+}
+
+.playerDetailsCard {
+  margin: 14px auto 0;
+  max-width: 720px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 14px;
+  padding: 14px;
+}
+
+.playerDetailsTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.playerDetailsLabel {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.7;
+}
+
+.playerDetailsName {
+  margin-top: 4px;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.playerDetailsTotal {
+  font-size: 14px;
+  color: var(--muted-text);
+  white-space: nowrap;
+}
+
+.playerDetailsBuyins {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-height: 220px;
+  overflow: auto;
+}
+
+@media (max-width: 768px) {
+  .playerSeatCompact {
+    width: min(var(--seat-size, 74px), 62px) !important;
+    min-height: min(var(--seat-size, 74px), 62px) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .playerDetailsTop {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .playerDetailsName {
+    font-size: 16px;
+  }
+
+  .playerDetailsTotal {
+    font-size: 11px;
+  }
+
+  .playerDetailsCard {
+    max-width: 420px;
+  }
+}
+
+.fab {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: none;
+  background: var(--accent-strong);
+  color: #fff;
+  font-size: 36px;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+  z-index: 30;
+}
+
+.fabPanel {
+  position: fixed;
+  right: 24px;
+  bottom: 96px;
+  width: min(320px, calc(100vw - 32px));
+  padding: 16px;
+  border-radius: 14px;
+  background: var(--panel-gradient);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.fabTitle {
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--panel-text);
+}
+
+.fabInput {
+  min-height: 38px;
+  border-radius: 8px;
+  border: 1px solid var(--input-border);
+  background: var(--input-bg);
+  color: var(--panel-text);
+  padding: 8px 10px;
+}
+
+.fabActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 480px) {
+  .fab {
+    width: 54px;
+    height: 54px;
+    right: 16px;
+    bottom: 16px;
+    font-size: 32px;
+  }
+
+  .fabPanel {
+    right: 16px;
+    bottom: 80px;
+  }
+}
