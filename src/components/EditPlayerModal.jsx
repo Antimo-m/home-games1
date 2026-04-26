@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import styles from './EditPlayerModal.module.css'
+import { validateAmount, filterNumericInput } from '../utils/validation'
 
 export default function EditPlayerModal({
     player,
@@ -18,6 +19,9 @@ export default function EditPlayerModal({
     const [editValue, setEditValue] = useState('')
     const [reduceIdx, setReduceIdx] = useState(null)
     const [reduceValue, setReduceValue] = useState('')
+    const [newBuyinError, setNewBuyinError] = useState(null)
+    const [editValueError, setEditValueError] = useState(null)
+    const [reduceValueError, setReduceValueError] = useState(null)
 
     function saveName() {
         const trimmed = name.trim()
@@ -26,10 +30,19 @@ export default function EditPlayerModal({
         onUpdatePlayer(player.id, { name: trimmed }, `Nome modificato in ${trimmed}`)
     }
 
+    function validateNewBuyin(value) {
+        const validation = validateAmount(value, {
+            required: true,
+            fieldName: 'Importo buy-in'
+        })
+        setNewBuyinError(validation.valid ? null : validation.error)
+        return validation.valid
+    }
+
     function addBuyin() {
-        const amount = Number(newBuyin.replace(',', '.'))
-        if (!Number.isFinite(amount) || amount <= 0) return
+        if (!validateNewBuyin(newBuyin)) return
         
+        const amount = Number(newBuyin)
         const firstBuyinIsZero = player.buyIns.length > 0 && player.buyIns[0] === 0
         
         if (firstBuyinIsZero) {
@@ -39,36 +52,81 @@ export default function EditPlayerModal({
         }
         
         setNewBuyin('')
+        setNewBuyinError(null)
         setNewBuyinOpen(false)
+    }
+
+    function validateEditValue(value) {
+        const validation = validateAmount(value, {
+            required: true,
+            fieldName: 'Importo add-on'
+        })
+        setEditValueError(validation.valid ? null : validation.error)
+        return validation.valid
     }
 
     function startEditBuyin(idx) {
         setEditingIdx(idx)
         setEditValue('')
+        setEditValueError(null)
         setReduceIdx(null)
     }
 
     function saveEditBuyin(idx) {
-        const amount = Number(editValue.replace(',', '.'))
-        if (!Number.isFinite(amount) || amount <= 0) return
+        if (!validateEditValue(editValue)) return
+        
+        const amount = Number(editValue)
         const currentValue = Number(player.buyIns[idx] || 0)
         onUpdateBuyin(player.id, idx, currentValue + amount)
         setEditingIdx(null)
         setEditValue('')
+        setEditValueError(null)
+    }
+
+    function validateReduceValue(value) {
+        const validation = validateAmount(value, {
+            required: true,
+            allowZero: true,
+            fieldName: 'Importo riduzione'
+        })
+        setReduceValueError(validation.valid ? null : validation.error)
+        return validation.valid
     }
 
     function startReduceBuyin(idx) {
         setReduceIdx(idx)
         setReduceValue('')
+        setReduceValueError(null)
         setEditingIdx(null)
     }
 
     function saveReduceBuyin(idx) {
-        const reduceAmount = Number(reduceValue.replace(',', '.'))
-        if (!Number.isFinite(reduceAmount) || reduceAmount < 0) return
+        if (!validateReduceValue(reduceValue)) return
+        
+        const reduceAmount = Number(reduceValue)
         onReduceBuyin(player.id, idx, reduceAmount)
         setReduceIdx(null)
         setReduceValue('')
+        setReduceValueError(null)
+    }
+
+    // Handler per input - filtra solo numeri
+    function handleNewBuyinChange(value) {
+        const filtered = filterNumericInput(value)
+        setNewBuyin(filtered)
+        if (newBuyinError) setNewBuyinError(null)
+    }
+
+    function handleEditValueChange(value) {
+        const filtered = filterNumericInput(value)
+        setEditValue(filtered)
+        if (editValueError) setEditValueError(null)
+    }
+
+    function handleReduceValueChange(value) {
+        const filtered = filterNumericInput(value)
+        setReduceValue(filtered)
+        if (reduceValueError) setReduceValueError(null)
     }
 
     const totalBuyin = player.buyIns.reduce((sum, val) => sum + (Number(val) || 0), 0)
@@ -111,11 +169,18 @@ export default function EditPlayerModal({
                                 <div className={styles.editForm}>
                                     <input
                                         type="text"
-                                        inputMode="decimal"
+                                        inputMode="numeric"
                                         value={newBuyin}
-                                        onChange={(e) => setNewBuyin(e.target.value)}
+                                        onChange={(e) => handleNewBuyinChange(e.target.value)}
+                                        onBlur={() => validateNewBuyin(newBuyin)}
                                         placeholder="Importo buy-in"
+                                        className={newBuyinError ? styles.inputError : ''}
                                     />
+                                    {newBuyinError && (
+                                        <div className={styles.inputErrorMsg}>
+                                            ⚠️ {newBuyinError}
+                                        </div>
+                                    )}
                                     <div className={styles.formActions}>
                                         <button className={styles.btnSmallGreen} onClick={addBuyin}>
                                             Conferma
@@ -124,6 +189,7 @@ export default function EditPlayerModal({
                                             className={styles.btnSmallRed}
                                             onClick={() => {
                                                 setNewBuyin('')
+                                                setNewBuyinError(null)
                                                 setNewBuyinOpen(false)
                                             }}
                                         >
@@ -146,11 +212,18 @@ export default function EditPlayerModal({
                                         <div className={styles.editForm}>
                                             <input
                                                 type="text"
-                                                inputMode="decimal"
+                                                inputMode="numeric"
                                                 value={editValue}
-                                                onChange={(e) => setEditValue(e.target.value)}
-                                                placeholder="Importo da aggiungere"
+                                                onChange={(e) => handleEditValueChange(e.target.value)}
+                                                onBlur={() => validateEditValue(editValue)}
+                                                placeholder="Importo add-on"
+                                                className={editValueError ? styles.inputError : ''}
                                             />
+                                            {editValueError && (
+                                                <div className={styles.inputErrorMsg}>
+                                                    ⚠️ {editValueError}
+                                                </div>
+                                            )}
                                             <div className={styles.formActions}>
                                                 <button 
                                                     className={styles.btnSmallGreen}
@@ -160,7 +233,11 @@ export default function EditPlayerModal({
                                                 </button>
                                                 <button 
                                                     className={styles.btnSmallRed}
-                                                    onClick={() => setEditingIdx(null)}
+                                                    onClick={() => {
+                                                        setEditingIdx(null)
+                                                        setEditValue('')
+                                                        setEditValueError(null)
+                                                    }}
                                                 >
                                                     Annulla
                                                 </button>
@@ -170,11 +247,18 @@ export default function EditPlayerModal({
                                         <div className={styles.editForm}>
                                             <input
                                                 type="text"
-                                                inputMode="decimal"
+                                                inputMode="numeric"
                                                 value={reduceValue}
-                                                onChange={(e) => setReduceValue(e.target.value)}
+                                                onChange={(e) => handleReduceValueChange(e.target.value)}
+                                                onBlur={() => validateReduceValue(reduceValue)}
                                                 placeholder="Importo da ridurre"
+                                                className={reduceValueError ? styles.inputError : ''}
                                             />
+                                            {reduceValueError && (
+                                                <div className={styles.inputErrorMsg}>
+                                                    ⚠️ {reduceValueError}
+                                                </div>
+                                            )}
                                             <div className={styles.formActions}>
                                                 <button 
                                                     className={styles.btnSmallGreen}
@@ -184,7 +268,11 @@ export default function EditPlayerModal({
                                                 </button>
                                                 <button 
                                                     className={styles.btnSmallRed}
-                                                    onClick={() => setReduceIdx(null)}
+                                                    onClick={() => {
+                                                        setReduceIdx(null)
+                                                        setReduceValue('')
+                                                        setReduceValueError(null)
+                                                    }}
                                                 >
                                                     Annulla
                                                 </button>

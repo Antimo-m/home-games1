@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import styles from './Setup.module.css'
+import { validateAmount, filterNumericInput } from '../utils/validation'
 
 const defaultBuyIn = '20'
 
@@ -15,31 +16,77 @@ export default function Setup({ onCreate, loadingCountdown }) {
   const [players, setPlayers] = useState(() => buildPlayers(4))
   const [tableName, setTableName] = useState('Tavolo')
   const [errors, setErrors] = useState([])
+  const [buyInErrors, setBuyInErrors] = useState({})
 
   function handleCountChange(value) {
-    setCount(value)
-    const parsed = parseInt(value, 10)
+    // Allow only numeric input for count
+    const filtered = filterNumericInput(value)
+    setCount(filtered)
+    const parsed = parseInt(filtered, 10)
     if (!Number.isFinite(parsed)) return
     const wanted = Math.max(2, Math.min(20, parsed))
     setPlayers((prev) => buildPlayers(wanted, prev))
   }
 
   function updatePlayer(idx, key, value) {
-    setPlayers((prev) => prev.map((p, i) => i === idx ? { ...p, [key]: value } : p))
+    // For buyIn field, filter to allow only digits
+    const processedValue = key === 'buyIn' ? filterNumericInput(value) : value
+    setPlayers((prev) => prev.map((p, i) => i === idx ? { ...p, [key]: processedValue } : p))
+    
+    // Clear error for this player when typing
+    if (key === 'buyIn' && buyInErrors[idx]) {
+      setBuyInErrors((prev) => {
+        const newErrors = { ...prev }
+        delete newErrors[idx]
+        return newErrors
+      })
+    }
+  }
+
+  function validateBuyIn(value, playerIndex) {
+    const validation = validateAmount(value, {
+      required: true,
+      fieldName: `Buy-in giocatore ${playerIndex + 1}`
+    })
+    
+    if (!validation.valid) {
+      setBuyInErrors((prev) => ({
+        ...prev,
+        [playerIndex]: validation.error
+      }))
+      return false
+    }
+    
+    // Clear error if valid
+    setBuyInErrors((prev) => {
+      const newErrors = { ...prev }
+      delete newErrors[playerIndex]
+      return newErrors
+    })
+    return true
   }
 
   function handleSubmit(e) {
     e.preventDefault()
     const errs = []
-    if (!Number.isInteger(Number(count)) || Number(count) < 2) errs.push('Numero di giocatori deve essere almeno 2')
+    
+    // Validate player count
+    if (!count || Number(count) < 2) errs.push('Numero di giocatori deve essere almeno 2')
     if (Number(count) > 20) errs.push('Numero di giocatori non può superare 20')
+    
+    // Validate each player
+    let hasBuyInErrors = false
     players.forEach((p, i) => {
       if (!p.name || String(p.name).trim() === '') errs.push(`Nome giocatore ${i + 1} non valido`)
-      const b = Number(p.buyIn)
-      if (!Number.isFinite(b) || b < 0) errs.push(`Buy-in giocatore ${i + 1} deve essere >= 0`)
+      
+      // Validate buy-in with new validation system
+      const buyInValid = validateBuyIn(p.buyIn, i)
+      if (!buyInValid) hasBuyInErrors = true
     })
+    
     setErrors(errs)
-    if (errs.length === 0) {
+    
+    if (errs.length === 0 && !hasBuyInErrors) {
       onCreate({
         players: players.map(p => ({ name: String(p.name).trim(), buyIn: Number(p.buyIn) })),
         tableName: String(tableName).trim() || 'Tavolo'
@@ -80,15 +127,21 @@ export default function Setup({ onCreate, loadingCountdown }) {
                 <input value={p.name} onChange={(e) => updatePlayer(i, 'name', e.target.value)} />
               </label>
               <label>
-                <div className={styles.small}>Buy-in iniziale</div>
+                <div className={styles.small}>Buy-in iniziale (€)</div>
                 <input
                   type="text"
-                  inputMode="decimal"
-                  pattern="[0-9]*[.,]?[0-9]*"
+                  inputMode="numeric"
                   value={p.buyIn}
                   onChange={(e) => updatePlayer(i, 'buyIn', e.target.value)}
+                  onBlur={() => validateBuyIn(p.buyIn, i)}
                   placeholder={defaultBuyIn}
+                  className={buyInErrors[i] ? styles.inputError : ''}
                 />
+                {buyInErrors[i] && (
+                  <div className={styles.inputErrorMsg}>
+                    ⚠️ {buyInErrors[i]}
+                  </div>
+                )}
               </label>
             </div>
           ))}

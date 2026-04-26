@@ -4,7 +4,7 @@
 
 import { useMemo, useState } from 'react'
 import styles from './FinalResults.module.css'
-import { validateAmount } from '../utils/validation'
+import { validateAmount, filterNumericInput } from '../utils/validation'
 
 export default function FinalResults({
     players,
@@ -22,7 +22,7 @@ export default function FinalResults({
             )
 
             const finalStack = Number(
-                (values[player.id] || '0').replace(',', '.')
+                (values[player.id] || '0')
             )
 
             // Mostra netto solo se l'utente ha inserito uno stack finale
@@ -49,6 +49,37 @@ export default function FinalResults({
     // Controlla se tutti gli stack finali sono stati inseriti
     const allFilled = rows.every(row => row.hasInputValue)
 
+    // Handler per input - filtra solo numeri
+    function handleInputChange(playerId, value) {
+        const filtered = filterNumericInput(value)
+        setValues((prev) => ({
+            ...prev,
+            [playerId]: filtered
+        }))
+        // Clear error when typing
+        if (errors[playerId]) {
+            setErrors((prev) => ({
+                ...prev,
+                [playerId]: null
+            }))
+        }
+    }
+
+    function handleInputBlur(playerId) {
+        // Validate on blur
+        const validation = validateAmount(values[playerId], {
+            required: true,
+            allowZero: true,
+            fieldName: 'Stack finale'
+        })
+        if (!validation.valid) {
+            setErrors((prev) => ({
+                ...prev,
+                [playerId]: validation.error
+            }))
+        }
+    }
+
     return (
         <div className={styles.wrapper}>
             <h2>Conti Finali</h2>
@@ -66,36 +97,12 @@ export default function FinalResults({
 
                     <div className={styles.inputWrapper}>
                         <input
-                            placeholder="Stack finale (es: 50.00)"
+                            placeholder="Stack finale (es: 50)"
+                            type="text"
+                            inputMode="numeric"
                             value={values[row.id] || ''}
-                            onChange={(e) => {
-                                const val = e.target.value
-                                setValues((prev) => ({
-                                    ...prev,
-                                    [row.id]: val
-                                }))
-                                // Clear error when typing
-                                if (errors[row.id]) {
-                                    setErrors((prev) => ({
-                                        ...prev,
-                                        [row.id]: null
-                                    }))
-                                }
-                            }}
-                            onBlur={() => {
-                                // Validate on blur
-                                const validation = validateAmount(values[row.id], {
-                                    required: true,
-                                    allowZero: true,
-                                    fieldName: 'Stack finale'
-                                })
-                                if (!validation.valid) {
-                                    setErrors((prev) => ({
-                                        ...prev,
-                                        [row.id]: validation.error
-                                    }))
-                                }
-                            }}
+                            onChange={(e) => handleInputChange(row.id, e.target.value)}
+                            onBlur={() => handleInputBlur(row.id)}
                             className={errors[row.id] ? styles.inputError : ''}
                         />
                         {errors[row.id] && (

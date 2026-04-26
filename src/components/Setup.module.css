@@ -305,3 +305,18 @@
 .cta[disabled] { 
   opacity:0.6;
 }
+
+/* Input error styles */
+.inputError {
+  border-color: #f44336 !important;
+  background: rgba(244, 67, 54, 0.1) !important;
+}
+
+.inputErrorMsg {
+  color: #f44336;
+  font-size: 11px;
+  margin-top: 4px;
+  padding: 4px 8px;
+  background: rgba(244, 67, 54, 0.1);
+  border-radius: 4px;
+}

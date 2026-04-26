@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import styles from './Table.module.css'
+import { validateAmount, filterNumericInput } from '../utils/validation'
 
 export default function TableView({
   players,
@@ -17,6 +18,8 @@ export default function TableView({
   const [addAmount, setAddAmount] = useState('')
   const [newPlayerName, setNewPlayerName] = useState('')
   const [newPlayerBuyIn, setNewPlayerBuyIn] = useState('')
+  const [addAmountError, setAddAmountError] = useState(null)
+  const [newPlayerBuyInError, setNewPlayerBuyInError] = useState(null)
 
   const totals = useMemo(() => {
     return players.map((player) =>
@@ -131,33 +134,43 @@ export default function TableView({
   // Nota: Il pulsante "Reset Tavolo" è stato rimosso per semplificare il flusso
   // La chiusura del tavolo avviene solo tramite "Chiudi Tavolo" -> "Conti Finali"
 
+  function validateAddAmount(value) {
+    const validation = validateAmount(value, {
+      required: true,
+      fieldName: 'Importo buy-in'
+    })
+    setAddAmountError(validation.valid ? null : validation.error)
+    return validation.valid
+  }
+
   function handleConfirmAdd() {
-    const num = Number(
-      (addAmount || '').toString().replace(',', '.')
-    )
-
     if (!effectiveSelectedPlayer) return
-    if (!Number.isFinite(num)) return
-    if (num < 0) return
+    if (!validateAddAmount(addAmount)) return
 
+    const num = Number(addAmount)
     onAddBuyin(effectiveSelectedPlayer, num)
 
     setAddAmount('')
+    setAddAmountError(null)
     setAddOpen(false)
+  }
+
+  function validateNewPlayerBuyIn(value) {
+    const validation = validateAmount(value, {
+      required: true,
+      fieldName: 'Buy-in iniziale'
+    })
+    setNewPlayerBuyInError(validation.valid ? null : validation.error)
+    return validation.valid
   }
 
   function handleAddPlayer() {
     const trimmedName = newPlayerName.trim()
 
-    const amount = Number(
-      (newPlayerBuyIn || '0')
-        .toString()
-        .replace(',', '.')
-    )
-
     if (!trimmedName) return
-    if (!Number.isFinite(amount)) return
-    if (amount < 0) return
+    if (!validateNewPlayerBuyIn(newPlayerBuyIn)) return
+
+    const amount = Number(newPlayerBuyIn)
 
     onAddPlayer({
       name: trimmedName,
@@ -166,7 +179,24 @@ export default function TableView({
 
     setNewPlayerName('')
     setNewPlayerBuyIn('')
+    setNewPlayerBuyInError(null)
     setAddPlayerOpen(false)
+  }
+
+  // Handler per input amount - filtra solo numeri
+  function handleAddAmountChange(value) {
+    const filtered = filterNumericInput(value)
+    setAddAmount(filtered)
+    // Clear error when typing
+    if (addAmountError) setAddAmountError(null)
+  }
+
+  // Handler per input new player buy-in - filtra solo numeri
+  function handleNewPlayerBuyInChange(value) {
+    const filtered = filterNumericInput(value)
+    setNewPlayerBuyIn(filtered)
+    // Clear error when typing
+    if (newPlayerBuyInError) setNewPlayerBuyInError(null)
   }
 
   return (
@@ -225,16 +255,22 @@ export default function TableView({
             ))}
           </select>
 
-          <input
-            className={styles.addInput}
-            type="text"
-            inputMode="decimal"
-            value={addAmount}
-            onChange={(e) =>
-              setAddAmount(e.target.value)
-            }
-            placeholder="Importo"
-          />
+          <div className={styles.addInputWrapper}>
+            <input
+              className={`${styles.addInput} ${addAmountError ? styles.inputError : ''}`}
+              type="text"
+              inputMode="numeric"
+              value={addAmount}
+              onChange={(e) => handleAddAmountChange(e.target.value)}
+              onBlur={() => validateAddAmount(addAmount)}
+              placeholder="Importo"
+            />
+            {addAmountError && (
+              <div className={styles.addInputErrorMsg}>
+                ⚠️ {addAmountError}
+              </div>
+            )}
+          </div>
 
           <button
             className={styles.cta}
@@ -380,18 +416,22 @@ export default function TableView({
             placeholder="Nome player"
           />
 
-          <input
-            className={styles.fabInput}
-            type="text"
-            inputMode="decimal"
-            value={newPlayerBuyIn}
-            onChange={(e) =>
-              setNewPlayerBuyIn(
-                e.target.value
-              )
-            }
-            placeholder="Buy-in iniziale"
-          />
+          <div className={styles.fabInputWrapper}>
+            <input
+              className={`${styles.fabInput} ${newPlayerBuyInError ? styles.inputError : ''}`}
+              type="text"
+              inputMode="numeric"
+              value={newPlayerBuyIn}
+              onChange={(e) => handleNewPlayerBuyInChange(e.target.value)}
+              onBlur={() => validateNewPlayerBuyIn(newPlayerBuyIn)}
+              placeholder="Buy-in iniziale"
+            />
+            {newPlayerBuyInError && (
+              <div className={styles.fabInputErrorMsg}>
+                ⚠️ {newPlayerBuyInError}
+              </div>
+            )}
+          </div>
 
           <div className={styles.fabActions}>
             <button
