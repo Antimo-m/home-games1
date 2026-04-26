@@ -1,0 +1,376 @@
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+    padding: 12px;
+    box-sizing: border-box;
+}
+
+.modal {
+    width: min(100%, 480px);
+    max-width: 480px;
+    background: linear-gradient(180deg, #1a1a1a 0%, #0f0f0f 100%);
+    border: 1px solid #333;
+    border-radius: 16px;
+    padding: 18px;
+    color: white;
+    max-height: calc(100svh - 24px);
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    box-sizing: border-box;
+}
+
+.header {
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.header h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    overflow-wrap: anywhere;
+    text-align: left;
+}
+
+.totalBuyin {
+    background: rgba(76, 175, 80, 0.15);
+    border: 1px solid rgba(76, 175, 80, 0.3);
+    padding: 5px 10px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #4CAF50;
+    white-space: nowrap;
+}
+
+.section {
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #333;
+}
+
+.section:last-of-type {
+    border-bottom: none;
+    margin-bottom: 16px;
+    padding-bottom: 0;
+}
+
+.sectionTitle {
+    margin: 0 0 12px 0;
+    font-size: 13px;
+    color: #888;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.nameRow {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.nameRow input {
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 38px;
+    padding: 9px 11px;
+    border-radius: 10px;
+    border: 1px solid rgba(92, 179, 255, 0.42);
+    background: #242b33;
+    color: white;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.nameRow input:focus {
+    outline: none;
+    border-color: #2196F3;
+    box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.18);
+    background: #28323d;
+}
+
+.buyins {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.buyinCard {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 12px;
+    transition: all 0.2s;
+}
+
+.buyinCard:hover {
+    border-color: #444;
+    background: #222;
+}
+
+.buyinHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.buyinTitle {
+    font-size: 12px;
+    font-weight: 600;
+    color: #aaa;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.buyinValue {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.buyinActions {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.buyinLocked {
+    padding: 6px 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.buyinLockedText {
+    font-size: 11px;
+    color: #888;
+    font-weight: 500;
+}
+
+.editForm {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.editForm input {
+    width: 100%;
+    min-height: 38px;
+    padding: 9px 11px;
+    border-radius: 8px;
+    border: 1px solid #444;
+    background: #2a2a2a;
+    color: white;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.editForm input:focus {
+    outline: none;
+    border-color: #4CAF50;
+}
+
+.formActions {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.addBuyinSection {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #333;
+}
+
+.addBuyinSectionEmpty {
+    margin-top: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.addBuyinRow {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.addBuyinRow input {
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 38px;
+    padding: 9px 11px;
+    border-radius: 10px;
+    border: 1px solid #444;
+    background: #222;
+    color: white;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.addBuyinRow input:focus {
+    outline: none;
+    border-color: #4CAF50;
+    background: #2a2a2a;
+}
+
+.dangerSection {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid #333;
+}
+
+/* BUTTONS */
+
+.modal button {
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    font-size: 12px;
+    line-height: 1.1;
+    padding: 8px 10px;
+    min-height: 36px;
+    white-space: nowrap;
+    touch-action: manipulation;
+}
+
+.modal button:active {
+    transform: scale(0.98);
+}
+
+.btnPrimary {
+    background: #4CAF50;
+    color: white;
+    flex-shrink: 0;
+    width: auto;
+}
+
+.btnPrimary:hover {
+    background: #45a049;
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+.btnBlue {
+    flex: 1 1 96px;
+    background: #2196F3;
+    color: white;
+}
+
+.btnBlue:hover {
+    background: #0b7dda;
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+}
+
+.btnRed {
+    flex: 1 1 76px;
+    background: #f44336;
+    color: white;
+}
+
+.btnRed:hover {
+    background: #da190b;
+    box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3);
+}
+
+.btnGreen {
+    background: #4CAF50;
+    color: white;
+    flex-shrink: 0;
+}
+
+.btnGreen:hover {
+    background: #45a049;
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+.btnSmallGreen {
+    flex: 1 1 96px;
+    background: #4CAF50;
+    color: white;
+}
+
+.btnSmallGreen:hover {
+    background: #45a049;
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+.btnSmallRed {
+    flex: 1 1 96px;
+    background: #f44336;
+    color: white;
+}
+
+.btnSmallRed:hover {
+    background: #da190b;
+}
+
+.btnDanger {
+    width: auto;
+    background: #d32f2f;
+    color: white;
+}
+
+.btnDanger:hover {
+    background: #b71c1c;
+    box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3);
+}
+
+.btnClose {
+    width: auto;
+    min-width: 96px;
+    background: #f44336;
+    color: white;
+    margin-top: 12px;
+}
+
+.btnClose:hover {
+    background: #da190b;
+    box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3);
+}
+
+@media (max-width: 480px) {
+    .modal {
+        max-width: 100%;
+        padding: 14px;
+        border-radius: 14px;
+    }
+
+    .header {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .nameRow,
+    .addBuyinRow {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .btnPrimary,
+    .btnGreen {
+        width: 100%;
+    }
+
+    .addBuyinSectionEmpty {
+        display: block;
+    }
+
+    .modal button {
+        min-height: 38px;
+    }
+}

@@ -30,7 +30,7 @@ export default function TablesList({ tables, historyTables, onSelectTable, onNew
       )}
 
       <div className={styles.actionsRow}>
-        <button className={styles.newTableBtn} onClick={onNewTable}>+ Crea tavolo</button>
+        <button className={styles.newTableBtn} onClick={onNewTable}>Crea tavolo</button>
       </div>
 
       {historyTables.length > 0 && (

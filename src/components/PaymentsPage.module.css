@@ -1,0 +1,430 @@
+/* PaymentsPage.module.css */
+
+/* Full-screen overlay that covers everything */
+.fullScreenPage {
+    position: fixed;
+    inset: 0;
+    background: #0a0a0f;
+    z-index: 1000;
+    overflow-y: auto;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.fullScreenOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 1001;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+.wrapper {
+    padding: 16px;
+    color: white;
+    max-width: 600px;
+    margin: 0 auto;
+    box-sizing: border-box;
+    min-height: 100vh;
+    padding-top: 40px;
+    padding-bottom: 60px;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 8px;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.subtitle {
+    text-align: center;
+    color: #aaa;
+    font-size: 13px;
+    margin-bottom: 20px;
+}
+
+/* Riepilogo Saldi */
+.summarySection {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 20px;
+}
+
+.summarySection h3 {
+    font-size: 14px;
+    color: #aaa;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.summaryRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.summaryRow:last-child {
+    border-bottom: none;
+}
+
+.summaryName {
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.summaryAmount {
+    font-weight: 700;
+    font-size: 15px;
+}
+
+.summaryRow.positive .summaryAmount {
+    color: #4CAF50;
+}
+
+.summaryRow.negative .summaryAmount {
+    color: #f44336;
+}
+
+/* Transazioni */
+.transactionsSection {
+    margin-bottom: 20px;
+}
+
+.transactionsSection h3 {
+    font-size: 14px;
+    color: #aaa;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.transactionsTotal {
+    background: rgba(33, 150, 243, 0.15);
+    border: 1px solid rgba(33, 150, 243, 0.3);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+    font-size: 13px;
+    color: #90caf9;
+    text-align: center;
+}
+
+.transactionsTotal strong {
+    font-size: 16px;
+}
+
+.noTransactions {
+    background: rgba(76, 175, 80, 0.15);
+    border: 1px solid rgba(76, 175, 80, 0.3);
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+    color: #81c784;
+    font-size: 14px;
+}
+
+.transactionsList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.transactionCard {
+    background: #1a1a2e;
+    border-radius: 14px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.transactionFrom,
+.transactionTo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 80px;
+}
+
+.transactionLabel {
+    font-size: 10px;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+}
+
+.transactionName {
+    font-weight: 600;
+    font-size: 14px;
+    color: white;
+}
+
+.transactionFrom .transactionName {
+    color: #ef5350;
+}
+
+.transactionTo .transactionName {
+    color: #66bb6a;
+}
+
+.transactionArrow {
+    font-size: 20px;
+    color: #666;
+}
+
+.transactionAmount {
+    background: linear-gradient(135deg, #2196F3, #1976D2);
+    color: white;
+    font-weight: 700;
+    font-size: 18px;
+    padding: 8px 16px;
+    border-radius: 10px;
+    min-width: 90px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
+}
+
+/* Warning */
+.warning {
+    background: rgba(255, 193, 7, 0.15);
+    border: 1px solid rgba(255, 193, 7, 0.3);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 20px;
+    color: #fff9c4;
+    font-size: 12px;
+    text-align: center;
+}
+
+/* Actions */
+.actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.actions button {
+    flex: 1;
+    padding: 14px 16px;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    min-height: 48px;
+}
+
+.actions button:hover:not(:disabled) {
+    opacity: 0.9;
+    transform: scale(1.02);
+}
+
+.actions button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.backBtn {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.confirmBtn {
+    background: linear-gradient(135deg, #4CAF50, #388E3C);
+    color: white;
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+/* Confirmation Overlay */
+.confirmationOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 20px;
+    box-sizing: border-box;
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+.confirmationCard {
+    background: #1a1a2e;
+    border-radius: 18px;
+    padding: 28px 24px;
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.confirmationCard h2 {
+    margin-bottom: 12px;
+    font-size: 20px;
+}
+
+.confirmationCard p {
+    color: #aaa;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.confirmationNote {
+    font-size: 12px !important;
+    color: #888 !important;
+    margin-bottom: 24px !important;
+}
+
+.confirmationActions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.confirmationActions button {
+    padding: 14px 16px;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    min-height: 48px;
+}
+
+.confirmationActions .confirmBtn {
+    background: #4CAF50;
+    color: white;
+}
+
+.confirmationActions .cancelBtn {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+/* Closing Overlay */
+.closingOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 20px;
+    box-sizing: border-box;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.closingCard {
+    background: linear-gradient(135deg, #1a1a2e, #2d2d44);
+    border-radius: 24px;
+    padding: 40px 32px;
+    max-width: 380px;
+    width: 100%;
+    text-align: center;
+    border: 1px solid rgba(76, 175, 80, 0.3);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
+.closingIcon {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, #4CAF50, #388E3C);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 36px;
+    color: white;
+    box-shadow: 0 8px 24px rgba(76, 175, 80, 0.4);
+    animation: scaleIn 0.5s ease-in-out;
+}
+
+@keyframes scaleIn {
+    from { transform: scale(0); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.closingCard h2 {
+    color: white;
+    margin-bottom: 8px;
+    font-size: 22px;
+}
+
+.closingCard p {
+    color: #aaa;
+    font-size: 14px;
+    margin-bottom: 24px;
+}
+
+.closingSpinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-top-color: #4CAF50;
+    border-radius: 50%;
+    margin: 0 auto;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .wrapper {
+        padding: 12px;
+    }
+
+    h2 {
+        font-size: 18px;
+    }
+
+    .transactionCard {
+        padding: 12px;
+        gap: 8px;
+    }
+
+    .transactionAmount {
+        font-size: 15px;
+        padding: 6px 12px;
+        min-width: 70px;
+    }
+
+    .transactionName {
+        font-size: 12px;
+    }
+
+    .transactionArrow {
+        font-size: 16px;
+    }
+
+    .actions button {
+        font-size: 13px;
+        padding: 12px 14px;
+    }
+}

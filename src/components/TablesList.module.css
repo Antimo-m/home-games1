@@ -197,15 +197,16 @@
 
 .selectBtn {
   flex: 1;
-  padding: 10px 14px;
+  padding: 8px 12px;
   background: linear-gradient(135deg, var(--accent-strong), var(--accent-strong-2));
   color: white;
   border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 14px;
+  border-radius: 10px;
   font-weight: 700;
   cursor: pointer;
-  min-height: 42px;
-  font-size: 13px;
+  min-height: 36px;
+  font-size: 12px;
+  line-height: 1.1;
   box-shadow: 0 10px 22px rgba(15, 143, 62, 0.22);
 }
 
@@ -215,22 +216,23 @@
 
 @media (max-width: 480px) {
   .selectBtn {
-    min-height: 40px;
+    min-height: 36px;
     padding: 8px 10px;
   }
 }
 
 .deleteBtn {
   flex: 0 0 auto;
-  padding: 10px 14px;
+  padding: 8px 12px;
   background: linear-gradient(135deg, #8a2d2d, #5f1717);
   color: white;
   border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 14px;
+  border-radius: 10px;
   font-weight: 700;
   cursor: pointer;
-  min-height: 42px;
-  font-size: 13px;
+  min-height: 36px;
+  font-size: 12px;
+  line-height: 1.1;
 }
 
 .deleteBtn:hover {
@@ -239,23 +241,24 @@
 
 @media (max-width: 480px) {
   .deleteBtn {
-    min-height: 40px;
+    min-height: 36px;
     padding: 8px 10px;
   }
 }
 
 .newTableBtn {
-  padding: 12px 24px;
+  padding: 8px 14px;
   background: linear-gradient(135deg, var(--accent-strong), var(--accent-strong-2));
   color: white;
   border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 16px;
+  border-radius: 10px;
   font-weight: 700;
-  font-size: 14px;
+  font-size: 12px;
+  line-height: 1.1;
   cursor: pointer;
   width: auto;
-  min-width: 180px;
-  min-height: 48px;
+  min-width: 128px;
+  min-height: 36px;
   box-shadow: 0 10px 22px rgba(15, 143, 62, 0.24);
 }
 
@@ -265,9 +268,9 @@
 
 @media (max-width: 480px) {
   .newTableBtn {
-    font-size: 13px;
-    min-height: 40px;
-    padding: 10px 16px;
+    font-size: 12px;
+    min-height: 36px;
+    padding: 8px 12px;
   }
 }
 
@@ -382,14 +385,15 @@
 
 .restoreBtn {
   padding: 8px 12px;
-  background: linear-gradient(135deg, #9f7720, #7a5910);
+  background: linear-gradient(135deg, var(--accent-strong), var(--accent-strong-2));
   color: white;
   border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 14px;
+  border-radius: 10px;
   font-weight: 700;
   cursor: pointer;
-  font-size: 13px;
-  min-height: 42px;
+  font-size: 12px;
+  line-height: 1.1;
+  min-height: 36px;
 }
 
 .restoreBtn:hover {
@@ -398,7 +402,7 @@
 
 @media (max-width: 480px) {
   .restoreBtn {
-    min-height: 40px;
+    min-height: 36px;
     font-size: 12px;
   }
 }

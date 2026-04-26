@@ -1,24 +1,28 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import styles from './Setup.module.css'
+
+const defaultBuyIn = '20'
+
+function buildPlayers(wanted, previous = []) {
+  const next = [...previous]
+  while (next.length < wanted) next.push({ name: `Player ${next.length + 1}`, buyIn: defaultBuyIn })
+  if (next.length > wanted) next.splice(wanted)
+  return next
+}
 
 export default function Setup({ onCreate, loadingCountdown }) {
   const [count, setCount] = useState('4')
-  const [players, setPlayers] = useState([])
+  const [players, setPlayers] = useState(() => buildPlayers(4))
   const [tableName, setTableName] = useState('Tavolo')
   const [errors, setErrors] = useState([])
-  const defaultBuyIn = '20'
 
-  useEffect(() => {
-    const parsed = parseInt(count, 10)
+  function handleCountChange(value) {
+    setCount(value)
+    const parsed = parseInt(value, 10)
     if (!Number.isFinite(parsed)) return
     const wanted = Math.max(2, Math.min(20, parsed))
-    setPlayers((prev) => {
-      const next = [...prev]
-      while (next.length < wanted) next.push({ name: `Player ${next.length + 1}`, buyIn: defaultBuyIn })
-      if (next.length > wanted) next.splice(wanted)
-      return next
-    })
-  }, [count])
+    setPlayers((prev) => buildPlayers(wanted, prev))
+  }
 
   function updatePlayer(idx, key, value) {
     setPlayers((prev) => prev.map((p, i) => i === idx ? { ...p, [key]: value } : p))
@@ -58,7 +62,7 @@ export default function Setup({ onCreate, loadingCountdown }) {
               type="text"
               inputMode="numeric"
               value={count}
-              onChange={(e) => setCount(e.target.value)}
+              onChange={(e) => handleCountChange(e.target.value)}
             />
           </label>
 

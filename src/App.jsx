@@ -1,8 +1,13 @@
-import { useEffect, useReducer, useRef } from 'react'
+import { useEffect, useReducer, useRef, useState } from 'react'
 import Setup from './components/Setup'
 import TableView from './components/TableView'
 import TablesList from './components/TablesList'
 import './App.css'
+import EditPlayerModal from './components/EditPlayerModal'
+import CloseTableModal from './components/CloseTableModal'
+import FinalResults from './components/FinalResults'
+import PaymentsPage from './components/PaymentsPage'
+
 
 const STORAGE_KEY = 'poker-home-games-tables-v2'
 const HISTORY_RETENTION_MS = 48 * 60 * 60 * 1000
@@ -211,6 +216,35 @@ function reducer(state, action) {
       return { ...state, tables }
     }
 
+    case 'REDUCE_BUYIN_TABLE': {
+      const { tableId, playerId, buyinIndex, reduceAmount } = action
+      const tables = state.tables.map((table) => {
+        if (table.id !== tableId) return table
+        const players = table.players.map((player) => {
+          if (player.id !== playerId) return player
+          const nextBuyIns = [...player.buyIns]
+          const currentValue = nextBuyIns[buyinIndex]
+          const newValue = Math.max(0, currentValue - reduceAmount)
+          
+          if (newValue <= 0) {
+            // Se il valore ridotto è <= 0, rimuovi il buy-in
+            return { ...player, buyIns: nextBuyIns.filter((_, idx) => idx !== buyinIndex) }
+          } else {
+            // Altrimenti aggiorna il valore
+            nextBuyIns[buyinIndex] = newValue
+            return { ...player, buyIns: nextBuyIns }
+          }
+        })
+        const player = players.find((entry) => entry.id === playerId)
+        const oldValue = table.players.find(p => p.id === playerId)?.buyIns[buyinIndex]
+        return appendActivity(
+          { ...table, players },
+          createActivityEntry('buyin_reduced', `Ridotto buy-in ${buyinIndex + 1} di ${player?.name || 'player'} da € ${oldValue.toFixed(2)} di € ${reduceAmount.toFixed(2)}`)
+        )
+      })
+      return { ...state, tables }
+    }
+
     case 'DELETE_TABLE': {
       const { tableId } = action
       const tableToDelete = state.tables.find(t => t.id === tableId)
@@ -285,6 +319,11 @@ function reducer(state, action) {
 export default function App() {
   const [state, dispatch] = useReducer(reducer, initialState)
   const timerRef = useRef(null)
+  const [editPlayer, setEditPlayer] = useState(null)
+  const [closeOpen, setCloseOpen] = useState(false)
+  const [showFinalResults, setShowFinalResults] = useState(false)
+  const [showPayments, setShowPayments] = useState(false)
+  const [finalResultsRows, setFinalResultsRows] = useState(null)
 
   // Load from localStorage
   useEffect(() => {
@@ -370,10 +409,6 @@ export default function App() {
     }
   }
 
-  function handleResetTable() {
-    dispatch({ type: 'RESET_TABLE', tableId: state.currentTableId })
-  }
-
   function handleAddPlayer(payload) {
     const amount = Number(payload.buyIn || 0)
     const player = {
@@ -398,6 +433,13 @@ export default function App() {
 
   function handleRemoveBuyin(playerId, buyinIndex) {
     dispatch({ type: 'REMOVE_BUYIN_TABLE', tableId: state.currentTableId, playerId, buyinIndex })
+  }
+
+  function handleReduceBuyin(playerId, buyinIndex, reduceAmount) {
+    const num = Number(reduceAmount)
+    if (Number.isFinite(num) && num >= 0) {
+      dispatch({ type: 'REDUCE_BUYIN_TABLE', tableId: state.currentTableId, playerId, buyinIndex, reduceAmount: num })
+    }
   }
 
   function handleExportData() {
@@ -426,7 +468,23 @@ export default function App() {
     dispatch({ type: 'RESTORE_TABLE_FROM_HISTORY', tableId })
   }
 
+
+  function handleArchiveCurrentTable() {
+    dispatch({
+      type: 'DELETE_TABLE',
+      tableId: state.currentTableId
+    })
+
+    setCloseOpen(false)
+    setShowFinalResults(false)
+    setEditPlayer(null)
+  }
+
   const currentTable = state.tables.find(t => t.id === state.currentTableId)
+  const liveEditPlayer =
+    editPlayer && currentTable
+      ? currentTable.players.find((player) => player.id === editPlayer.id)
+      : null
 
   return (
     <div className={`app-root theme-${state.theme}`}>
@@ -492,23 +550,104 @@ export default function App() {
             </div>
           )}
 
-          {currentTable.gameStarted && (
-            <TableView
-              tableId={state.currentTableId}
+          {state.view === 'playing' &&
+            currentTable &&
+            currentTable.gameStarted &&
+            !showFinalResults && (
+              <TableView
+                tableId={state.currentTableId}
+                players={currentTable.players}
+                onAddBuyin={handleAddBuyin}
+                onAddPlayer={handleAddPlayer}
+                onUpdatePlayer={handleUpdatePlayer}
+                onRemovePlayer={handleRemovePlayer}
+                onUpdateBuyin={handleUpdateBuyin}
+                onRemoveBuyin={handleRemoveBuyin}
+                onClose={() => setCloseOpen(true)}
+                onEditPlayer={(player) =>
+                  setEditPlayer(player)
+                }
+                lastInserted={currentTable.lastInserted}
+                tableName={currentTable.name}
+              />
+            )}
+
+          {showFinalResults && currentTable && (
+            <FinalResults
               players={currentTable.players}
-              onAddBuyin={handleAddBuyin}
-              onAddPlayer={handleAddPlayer}
-              onUpdatePlayer={handleUpdatePlayer}
-              onRemovePlayer={handleRemovePlayer}
-              onUpdateBuyin={handleUpdateBuyin}
-              onRemoveBuyin={handleRemoveBuyin}
-              onReset={handleResetTable}
-              onClose={() => dispatch({ type: 'SET_VIEW', view: 'list' })}
-              lastInserted={currentTable.lastInserted}
-              tableName={currentTable.name}
-              activity={currentTable.activity || []}
+              onBack={() => {
+                setShowFinalResults(false)
+              }}
+              onConfirm={(rows) => {
+                setFinalResultsRows(rows)
+                setShowFinalResults(false)
+                setShowPayments(true)
+              }}
             />
           )}
+
+          {showPayments && finalResultsRows && (
+            <PaymentsPage
+              rows={finalResultsRows}
+              onBack={() => {
+                setShowPayments(false)
+                setShowFinalResults(true)
+              }}
+              onConfirm={() => {
+                handleArchiveCurrentTable()
+                setShowPayments(false)
+                setFinalResultsRows(null)
+              }}
+            />
+          )}
+
+
+          {closeOpen && (
+            <CloseTableModal
+              onArchive={
+                handleArchiveCurrentTable
+              }
+              onFinalResults={() => {
+                setCloseOpen(false)
+                setShowFinalResults(true)
+              }}
+              onClose={() =>
+                setCloseOpen(false)
+              }
+            />
+          )}
+
+
+
+
+          {liveEditPlayer && (
+            <EditPlayerModal
+              player={liveEditPlayer}
+              onClose={() =>
+                setEditPlayer(null)
+              }
+              onUpdatePlayer={
+                handleUpdatePlayer
+              }
+              onRemovePlayer={(playerId) => {
+                handleRemovePlayer(playerId)
+                setEditPlayer(null)
+              }}
+              onUpdateBuyin={
+                handleUpdateBuyin
+              }
+              onRemoveBuyin={
+                handleRemoveBuyin
+              }
+              onAddBuyin={
+                handleAddBuyin
+              }
+              onReduceBuyin={
+                handleReduceBuyin
+              }
+            />
+          )}
+    
         </>
       )}
 

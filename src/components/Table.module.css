@@ -159,17 +159,18 @@
   background: linear-gradient(135deg, #8a2d2d, #5f1717); 
   color: white; 
   border: 1px solid rgba(255,255,255,0.08); 
-  padding: 10px 14px; 
-  border-radius: 14px; 
+  padding: 8px 12px; 
+  border-radius: 10px; 
   cursor: pointer; 
   font-weight: 600;
-  min-height: 42px;
+  min-height: 36px;
   font-size: 12px;
+  line-height: 1.1;
 }
 
 @media (max-width: 480px) {
   .reset {
-    min-height: 40px;
+    min-height: 36px;
     font-size: 11px;
   }
 }
@@ -178,37 +179,39 @@
   background: linear-gradient(135deg, var(--accent-strong), var(--accent-strong-2)); 
   color: white; 
   border: 1px solid rgba(255,255,255,0.12); 
-  padding: 10px 14px; 
-  border-radius: 14px; 
+  padding: 8px 12px; 
+  border-radius: 10px; 
   font-weight: 700; 
   cursor: pointer;
-  min-height: 42px;
+  min-height: 36px;
   font-size: 12px;
+  line-height: 1.1;
   box-shadow: 0 10px 22px rgba(15, 143, 62, 0.22);
 }
 
 @media (max-width: 480px) {
   .cta {
-    min-height: 40px;
+    min-height: 36px;
     font-size: 11px;
   }
 }
 
 .closeBtn { 
-  background: #5b5b5b; 
+  background: linear-gradient(135deg, #8a2d2d, #5f1717); 
   color: white; 
   border: 1px solid rgba(255,255,255,0.08); 
-  padding: 10px 14px; 
-  border-radius: 14px; 
+  padding: 8px 12px; 
+  border-radius: 10px; 
   font-weight: 700; 
   cursor: pointer;
-  min-height: 42px;
+  min-height: 36px;
   font-size: 12px;
+  line-height: 1.1;
 }
 
 @media (max-width: 480px) {
   .closeBtn {
-    min-height: 40px;
+    min-height: 36px;
     font-size: 11px;
   }
 }
@@ -227,13 +230,14 @@
 
 .addSelect,
 .addInput {
-  padding: 12px 14px;
-  border-radius: 14px;
-  min-height: 42px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  min-height: 38px;
   font-size: 12px;
   border: 1px solid var(--input-border);
   background: var(--input-bg);
   color: var(--panel-text);
+  box-sizing: border-box;
 }
 
 .addSelect {
@@ -256,7 +260,7 @@
   }
 
   .addInput {
-    width: 120px;
+    width: min(100%, 150px);
   }
 }
 
@@ -589,6 +593,26 @@
   touch-action: pan-y;
 }
 
+.playerDetailsActions {
+  margin-top: 14px;
+  display: flex;
+  justify-content: center;
+}
+
+.manageBtn {
+  background: linear-gradient(135deg, #2196F3, #1169ad);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.1;
+  min-height: 36px;
+  padding: 8px 12px;
+  box-shadow: 0 10px 22px rgba(33, 150, 243, 0.18);
+}
+
 @media (max-width: 768px) {
   .playerSeatCompact {
     width: min(var(--seat-size, 74px), 62px) !important;
@@ -612,6 +636,8 @@
 
   .playerDetailsCard {
     max-width: 420px;
+    padding: 14px;
+    border-radius: 14px;
   }
 }
 
@@ -663,6 +689,7 @@
   background: var(--input-bg);
   color: var(--panel-text);
   padding: 8px 10px;
+  box-sizing: border-box;
 }
 
 .fabActions {

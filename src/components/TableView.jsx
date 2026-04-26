@@ -1,14 +1,14 @@
-import { useMemo, useState, useEffect } from 'react'
+import { useMemo, useState } from 'react'
 import styles from './Table.module.css'
 
 export default function TableView({
   players,
   onAddBuyin,
   onAddPlayer,
-  onReset,
   onClose,
   lastInserted,
-  tableName = 'Tavolo'
+  tableName = 'Tavolo',
+  onEditPlayer
 }) {
   const [addOpen, setAddOpen] = useState(false)
   const [addPlayerOpen, setAddPlayerOpen] = useState(false)
@@ -17,18 +17,6 @@ export default function TableView({
   const [addAmount, setAddAmount] = useState('')
   const [newPlayerName, setNewPlayerName] = useState('')
   const [newPlayerBuyIn, setNewPlayerBuyIn] = useState('')
-
-  useEffect(() => {
-    if (!players.length) return
-
-    setSelectedPlayer(players[0].id)
-
-    const exists = players.some((p) => p.id === activePlayerId)
-
-    if (!exists) {
-      setActivePlayerId(players[0].id)
-    }
-  }, [players])
 
   const totals = useMemo(() => {
     return players.map((player) =>
@@ -68,6 +56,11 @@ export default function TableView({
   const activePlayerIndex = players.findIndex(
     (player) => player.id === activePlayerId
   )
+  const selectedPlayerExists = players.some(
+    (player) => player.id === selectedPlayer
+  )
+  const effectiveSelectedPlayer =
+    selectedPlayerExists ? selectedPlayer : players[0]?.id ?? ''
 
   const activePlayer =
     activePlayerIndex >= 0
@@ -135,16 +128,19 @@ export default function TableView({
     return computeSeatPositions(players.length)
   }, [players.length])
 
+  // Nota: Il pulsante "Reset Tavolo" è stato rimosso per semplificare il flusso
+  // La chiusura del tavolo avviene solo tramite "Chiudi Tavolo" -> "Conti Finali"
+
   function handleConfirmAdd() {
     const num = Number(
       (addAmount || '').toString().replace(',', '.')
     )
 
-    if (!selectedPlayer) return
+    if (!effectiveSelectedPlayer) return
     if (!Number.isFinite(num)) return
     if (num < 0) return
 
-    onAddBuyin(selectedPlayer, num)
+    onAddBuyin(effectiveSelectedPlayer, num)
 
     setAddAmount('')
     setAddOpen(false)
@@ -188,7 +184,7 @@ export default function TableView({
 
           <div className={styles.buttonRow}>
             <button
-              className={styles.cta}
+              className={addOpen ? styles.closeBtn : styles.cta}
               onClick={() =>
                 setAddOpen((open) => !open)
               }
@@ -198,19 +194,12 @@ export default function TableView({
                 : 'Aggiungi Buy-in'}
             </button>
 
-            <button
-              className={styles.reset}
-              onClick={onReset}
-            >
-              Reset tavolo
-            </button>
-
             {onClose && (
               <button
                 className={styles.closeBtn}
                 onClick={onClose}
               >
-                Indietro
+               Chiudi Tavolo
               </button>
             )}
           </div>
@@ -220,7 +209,7 @@ export default function TableView({
       {addOpen && (
         <div className={styles.addPanel}>
           <select
-            value={selectedPlayer}
+            value={effectiveSelectedPlayer}
             onChange={(e) =>
               setSelectedPlayer(e.target.value)
             }
@@ -362,6 +351,14 @@ export default function TableView({
                 )
               }
             )}
+          </div>
+          <div className={styles.playerDetailsActions}>
+            <button
+              className={styles.manageBtn}
+              onClick={() => onEditPlayer?.(activePlayer)}
+            >
+              Gestisci Player
+            </button>
           </div>
         </div>
       )}
